@@ -1,0 +1,21 @@
+dist: jammy
+language: ruby
+rvm:
+- 3.2.1
+branches:
+  only:
+  - develop
+  - staging
+  - master
+before_install:
+- gem install bundler
+script:
+- bundle exec rspec
+notifications:
+  email:
+    recipients:
+    - patryk.katek@cloudsailor.com
+  slack:
+    rooms:
+      secure: Abn1YX+P+TWw/NZiUoD6vNt5HbAfvXPK+tpOndc1vHK9pW2qWG4J+NF8E0Bc65QjgGSl6tw10ys423Hfd7qak3v1HFzHp8p4fJRroyBFbwQ+quKY1d4Jh3n+kE2/kp90KPcmNprhZvz7XThHg7joEM497vIUBikLK0uAMs7J93l2wniOBVGVSvaP5gae9f0XTuTdeJIA8fJy/Fh93rjXTe4dmlSDiNJ1NTuC8WYPxbw6FPbUziIVyJWiZCl4IJU49Uj+jNi8XMR094KNlYcUilwFelHRxOf5d/XZuHFqhasY9bYc/U2PO7dV4QjlM1pSA/QL+J3VCHzTWjdS0cBXmB7zMUiT86VHSx+iamhdiGEGbmo+EalYOL+QfLMbesjWAtbUQY64aviAwGvNclkx3dOZSRJBBxhiyQ42Yaq2Q/sjGeUNGEvoXKTaHqgKe4qzxRzixbX6Nmw2Sr8eV3IbTEArHz5xehilE7BBeTE8TuTuHq/+zVm0lbA2vZ70OF/fWhnpPVHNY2PW1JD7hr+UcR2lCkDjPztyUNFbtXCMieFtvXC6faXi3IHp4Pm8gT/kux3yRBCCWwC772k7tATrIOShgBj4xQsIgUN+1LrhAjcY5Xmj3zB+P06yowEvSUfXOmLADnUYslJBEaQXXFC3hlq+etJdACdvRx+nt/OhN4g=
+    on_pull_requests: false
