@@ -221,6 +221,8 @@ GEM
     nio4r (2.7.0)
     nokogiri (1.16.2-x86_64-darwin)
       racc (~> 1.4)
+    nokogiri (1.16.2-x86_64-linux)
+      racc (~> 1.4)
     parallel (1.24.0)
     paranoia (2.6.3)
       activerecord (>= 5.1, < 7.2)
@@ -443,6 +445,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   rake (~> 13.0)
@@ -450,6 +453,7 @@ DEPENDENCIES
   rubocop (~> 1.21)
   spree
   spree-seo!
+  spree_backend
   spree_i18n
 
 BUNDLED WITH
