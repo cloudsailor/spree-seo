@@ -2,7 +2,7 @@
 
 require_relative "seo/version"
 require_relative "../filter_combination"
-require_relative "seo/taxon_decorator"
+require_relative "seo/add_routes"
 
 module Spree
   module Seo
