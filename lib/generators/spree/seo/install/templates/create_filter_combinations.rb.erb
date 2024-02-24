@@ -1,14 +1,24 @@
 # This migration adds the optional `object_changes` column, in which PaperTrail
 # will store the `changes` diff for each update event. See the readme for
 # details.
+
 class CreateFilterCombinations < ActiveRecord::Migration<%= migration_version %>
   def up
     create_table :filter_combinations do |t|
       t.belongs_to :spree_taxon
+      t.json    :filters
+      t.string  :canonical_url
+      t.string  :page_title
+      t.string  :meta_description
+      t.string  :keywords
+      t.string  :custom_h1
+      t.string  :custom_h2
+      t.string  :seo_description
+      t.float   :priority
     end
   end
 
   def down
-    remove_table :filter_combinations
+    drop_table :filter_combinations
   end
 end

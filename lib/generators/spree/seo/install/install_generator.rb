@@ -15,24 +15,11 @@ module Spree
            "  See section 5.c. Generators in README.md for more information."
 
       def create_migration_file
-        add_seo_migration("create_financial_combinations")
+        add_seo_migration("create_filter_combinations")
       end
 
       private
 
-      # To use uuid instead of integer for primary key
-      def item_id_type_options
-        options.uuid? ? "string" : "bigint"
-      end
-
-      # To use uuid for version table primary key
-      def version_table_primary_key_type
-        if options.uuid?
-          ", id: :uuid"
-        else
-          ""
-        end
-      end
 
       # MySQL 5.6 utf8mb4 limit is 191 chars for keys used in indexes.
       # See https://github.com/paper-trail-gem/paper_trail/issues/651
