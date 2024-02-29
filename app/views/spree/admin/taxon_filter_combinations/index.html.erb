@@ -1,0 +1,12 @@
+<% content_for :page_title do %>
+  <%= I18n.t(:taxon_filter_combinations) %>
+<% end %>
+
+<div class="taxon-products-view">
+  <div id="taxonSearch" class="form-group">
+    <%= select_tag :taxon_id, nil, class: 'd-block w-100' %>
+  </div>
+
+  <ul id="taxon_filter_combinations" class="taxon row"></ul>
+  <%= render partial: "spree/admin/taxon_filter_combinations/autocomplete", formats: :js %>
+</div>
