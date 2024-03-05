@@ -8,6 +8,8 @@ module Spree
 
       def index; end
 
+      def edit; end
+
       def model_class
         ::FilterCombination
       end
