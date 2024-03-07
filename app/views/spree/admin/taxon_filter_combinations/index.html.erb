@@ -95,25 +95,9 @@
           }
         }).done(function (json) {
           taxonProducts.empty()
-
-          console.log(json.data)
           taxonProducts.html(json.data[0].attributes.combinations_html)
         })
       })
     }
-
-    // taxonProducts.on('click', '.js-delete-product', function (e) {
-    //   var product = $(this).parents('.product')
-    //   var classificationId = product.data('classification-id')
-    //   $.ajax({
-    //     url: Spree.routes.classifications_api_v2 + '/' + classificationId.toString(),
-    //     headers: Spree.apiV2Authentication(),
-    //     type: 'DELETE'
-    //   }).done(function () {
-    //     product.fadeOut(400, function (e) {
-    //       product.remove()
-    //     })
-    //   })
-    // })
   })
 </script>

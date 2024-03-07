@@ -14,9 +14,13 @@ module Spree
         ::FilterCombination
       end
 
+      def collection_url(options = {})
+        spree.polymorphic_url([:admin, :taxon_filter_combinations], options)
+      end
+
       private
 
-      def filter_combination_params
+      def permitted_resource_params
         params.require(:filter_combination).permit(:spree_taxon_id, :locale, :filters,
                                                    :canonical_url, :page_title, :meta_description,
                                                    :keywords, :custom_h1, :custom_h2,
