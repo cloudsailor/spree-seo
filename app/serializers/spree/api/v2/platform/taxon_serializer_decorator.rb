@@ -14,9 +14,10 @@ module Spree
 
             base.attribute(:combinations_html) do |taxon|
               headings = "<thead><th>Locale</th><th>Filters</th><th>Canonical URL</th><th>Page Title</th><th>Meta Description</th><th class='text-center'>Actions</th></thead>"
-              body = "<tbody>#{taxon.filter_combinations.map { |f| "<td>#{f.locale}</td><td>#{f.filters.map { |k, v| "#{k}=#{v}"}.join(',')}<td><td>#{f.canonical_url}</td><td>#{f.page_title}</td><td>#{f.meta_description}</td><td class='actions'><span><a class='edit' href='/admin/taxon_filter_combinations/#{f.id}/edit'>Edit</a></span></td>"}.join('')}</tbody>"
+              data = taxon.filter_combinations.map { |f| "<tr><td>#{f.locale}</td><td>#{f.filters.map { |k, v| "#{k}=#{v}"}.join(',')}</td><td>#{f.canonical_url}</td><td>#{f.page_title}</td><td>#{f.meta_description}</td><td class='actions'><span><a class='edit' href='/admin/taxon_filter_combinations/#{f.id}/edit'>Edit</a></span></td></tr>"}.join('')
+              body = "<tbody>#{data}</tbody>"
 
-              "<div class='table-responsive border rounded bg-white'><a class='btn btn-success' href='/admin/taxon_filter_combinations/new'>New Combination</a><table class='table'>#{headings}#{body}</table></div>"
+              "<div class='table-responsive border rounded bg-white'><a class='mt-3 ml-3 btn btn-success' href='/admin/taxon_filter_combinations/new?taxon_id=#{taxon.id}'>New Combination</a><table class='table'>#{headings}#{body}</table></div>"
             end
           end
         end

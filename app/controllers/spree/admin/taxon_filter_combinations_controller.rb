@@ -10,6 +10,34 @@ module Spree
 
       def edit; end
 
+      def new
+        @object = ::FilterCombination.new(spree_taxon_id: params[:taxon_id])
+      end
+
+      def create
+        invoke_callbacks(:create, :before)
+        @object = ::FilterCombination.new(permitted_resource_params)
+
+        if @object.save
+          set_current_store
+          invoke_callbacks(:create, :after)
+          respond_with(@object) do |format|
+            format.turbo_stream if update_turbo_stream_enabled?
+            format.html do
+              flash[:success] = flash_message_for(@object, :successfully_created)
+              redirect_to location_after_save unless request.xhr?
+            end
+            format.js { render layout: false }
+          end
+        else
+          invoke_callbacks(:create, :fails)
+          respond_with(@object) do |format|
+            format.html { render action: :new, status: :unprocessable_entity }
+            format.js { render layout: false, status: :unprocessable_entity }
+          end
+        end
+      end
+
       def model_class
         ::FilterCombination
       end
