@@ -28,8 +28,9 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency 'rails'
+  spec.add_dependency 'pg'
   spec.add_dependency 'spree'
   spec.add_dependency 'spree_backend'
-  spec.add_dependency 'spree_gateway'
-  spec.add_dependency 'rails'
+  spec.add_dependency 'spree_i18n'
 end
