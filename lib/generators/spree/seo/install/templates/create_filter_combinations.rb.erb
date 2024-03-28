@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+class CreateFilterCombinations < ActiveRecord::Migration<%= migration_version %>
+  def up
+    create_table :filter_combinations do |t|
+      t.belongs_to :spree_taxon
+      t.string  :locale
+      t.json    :filters
+      t.string  :canonical_url
+      t.string  :page_title
+      t.string  :meta_description
+      t.string  :keywords
+      t.string  :custom_h1
+      t.string  :custom_h2
+      t.string  :seo_description
+      t.float   :priority
+    end
+  end
+
+  def down
+    drop_table :filter_combinations
+  end
+end

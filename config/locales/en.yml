@@ -1,0 +1,7 @@
+en:
+  actions:
+    back: Back
+    submit: Submit
+  taxon_filter_combinations: Taxon Filter Combinations
+  spree:
+    taxon_filter_combinations: Taxon Filter Combinations

@@ -1,0 +1,10 @@
+<% content_for :page_title do %>
+  <%= I18n.t(:taxon_filter_combinations) %>
+<% end %>
+
+
+<%= form_for [:admin, @taxon_filter_combination], url: admin_taxon_filter_combinations_path, method: :post, html: { multipart: true } do |f| %>
+  <fieldset>
+    <%= render partial: 'form', locals: { f: f } %>
+  </fieldset>
+<% end %>
