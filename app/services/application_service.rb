@@ -1,2 +1,1 @@
-class ApplicationService
-end
+class ApplicationService; end

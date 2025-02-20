@@ -2,8 +2,6 @@ module Spree
   module Seo
     module FileDump
       class BaseSeoJob < ApplicationJob
-        private
-
         def default_path
           "#{Rails.root}/public/files"
         end
@@ -16,12 +14,12 @@ module Spree
           %w[en sk cs]
         end
 
-        def load_file(path)
+        def load_file(path, locale)
           @file = JSON.load_file(path)
         rescue
           # Create new file if it does not exist
           File.open(path, 'w') do |file|
-            file.write(JSON.pretty_generate({"#{@locale}": {}}))
+            file.write(JSON.pretty_generate({"#{locale}": {}}))
           end
 
           @file = JSON.load_file(path)
