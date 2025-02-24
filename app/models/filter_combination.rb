@@ -7,6 +7,9 @@ class FilterCombination < ActiveRecord::Base
   validates :priority, inclusion: 0.0..1.0
 
   before_save :format_filters
+  after_create -> {update_taxon_seo(:create)}
+  after_update -> {update_taxon_seo(:update)}
+  before_destroy -> {update_taxon_seo(:delete)}
 
   def format_filters
     dict = {}
@@ -17,5 +20,10 @@ class FilterCombination < ActiveRecord::Base
     end
 
     self.filters = dict
+  end
+
+  private
+  def update_taxon_seo(action)
+    Spree::Seo::FileDump::UpdateSeoService.new(self).call(action)
   end
 end
