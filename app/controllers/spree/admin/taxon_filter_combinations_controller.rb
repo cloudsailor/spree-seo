@@ -2,17 +2,18 @@
 
 module Spree
   module Admin
+    # Controller to manage FilterCombination resources
     class TaxonFilterCombinationsController < ::Spree::Admin::ResourceController
       include ::Spree::Admin::Translatable
       respond_to :html, :js
 
       def index; end
 
-      def edit; end
-
       def new
         @object = ::FilterCombination.new(spree_taxon_id: params[:taxon_id])
       end
+
+      def edit; end
 
       def create
         invoke_callbacks(:create, :before)
@@ -21,20 +22,10 @@ module Spree
         if @object.save
           set_current_store
           invoke_callbacks(:create, :after)
-          respond_with(@object) do |format|
-            format.turbo_stream if update_turbo_stream_enabled?
-            format.html do
-              flash[:success] = flash_message_for(@object, :successfully_created)
-              redirect_to location_after_save unless request.xhr?
-            end
-            format.js { render layout: false }
-          end
+          success_response
         else
           invoke_callbacks(:create, :fails)
-          respond_with(@object) do |format|
-            format.html { render action: :new, status: :unprocessable_entity }
-            format.js { render layout: false, status: :unprocessable_entity }
-          end
+          unsuccessful_response
         end
       end
 
@@ -43,7 +34,7 @@ module Spree
       end
 
       def collection_url(options = {})
-        spree.polymorphic_url([:admin, :taxon_filter_combinations], options)
+        spree.polymorphic_url(%i[admin taxon_filter_combinations], options)
       end
 
       private
@@ -53,6 +44,24 @@ module Spree
                                                    :canonical_url, :page_title, :meta_description,
                                                    :keywords, :custom_h1, :custom_h2,
                                                    :seo_description, :priority)
+      end
+
+      def success_response
+        respond_with(@object) do |format|
+          format.turbo_stream if update_turbo_stream_enabled?
+          format.html do
+            flash[:success] = flash_message_for(@object, :successfully_created)
+            redirect_to location_after_save unless request.xhr?
+          end
+          format.js { render layout: false }
+        end
+      end
+
+      def unsuccessful_response
+        respond_with(@object) do |format|
+          format.html { render action: :new, status: :unprocessable_entity }
+          format.js { render layout: false, status: :unprocessable_entity }
+        end
       end
     end
   end

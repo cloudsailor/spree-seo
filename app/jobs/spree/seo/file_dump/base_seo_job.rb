@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 module Spree
   module Seo
     module FileDump
+      # Base job for seo content management
       class BaseSeoJob < ApplicationJob
         def default_path
-          "#{Rails.root}/public/files"
+          Rails.public_path.join('files').to_s
         end
 
         def envs
@@ -16,11 +19,9 @@ module Spree
 
         def load_file(path, locale)
           @file = JSON.load_file(path)
-        rescue
+        rescue StandardError
           # Create new file if it does not exist
-          File.open(path, 'w') do |file|
-            file.write(JSON.pretty_generate({"#{locale}": {}}))
-          end
+          File.write(path, JSON.pretty_generate({ "#{locale}": {} }))
 
           @file = JSON.load_file(path)
         end

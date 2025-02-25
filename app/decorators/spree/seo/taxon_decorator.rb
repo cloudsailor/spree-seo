@@ -2,6 +2,7 @@
 
 module Spree
   module Seo
+    # Base taxon decorator
     module TaxonDecorator
       def self.prepended(base)
         base.has_many :filter_combinations, foreign_key: 'spree_taxon_id'

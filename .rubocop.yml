@@ -1,13 +1,23 @@
+require:
+  - rubocop-rails
+
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  FailLevel: error
 
-Style/StringLiterals:
-  Enabled: true
-  EnforcedStyle: double_quotes
+Style/Documentation:
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'test/**/*'
 
-Style/StringLiteralsInInterpolation:
-  Enabled: true
-  EnforcedStyle: double_quotes
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'db/**/*'
+    - './spree-seo.gemspec'
 
-Layout/LineLength:
-  Max: 120
+Lint/MissingSuper:
+  Exclude:
+    - 'app/**/*'
