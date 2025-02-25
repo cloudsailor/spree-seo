@@ -1,21 +1,22 @@
 # frozen_string_literal: true
-require_relative "lib/spree/seo/version"
+
+require_relative 'lib/spree/seo/version'
 
 Gem::Specification.new do |spec|
-  spec.name = "spree-seo"
+  spec.name = 'spree-seo'
   spec.version = Spree::Seo::VERSION
-  spec.authors = ["Jibran Usman"]
-  spec.email = ["jibran.usman@hotmail.com"]
+  spec.authors = ['Jibran Usman']
+  spec.email = ['jibran.usman@hotmail.com']
 
-  spec.summary = "An SEO add-on for the Spree gem that adds on a layer of SEO functions"
-  spec.homepage = "https://github.com/cloudsailor/spree-seo"
-  spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.summary = 'An SEO add-on for the Spree gem that adds on a layer of SEO functions'
+  spec.homepage = 'https://github.com/cloudsailor/spree-seo'
+  spec.license = 'MIT'
+  spec.required_ruby_version = '>= 3.3.0'
 
-  spec.metadata["allowed_push_host"] = "http://rubygems.org/"
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/cloudsailor/spree-seo"
-  spec.metadata["changelog_uri"] = "https://github.com/cloudsailor/spree-seo/CHANGELOG.md"
+  spec.metadata['allowed_push_host'] = 'http://rubygems.org/'
+  spec.metadata['homepage_uri'] = spec.homepage
+  spec.metadata['source_code_uri'] = 'https://github.com/cloudsailor/spree-seo'
+  spec.metadata['changelog_uri'] = 'https://github.com/cloudsailor/spree-seo/CHANGELOG.md'
 
   spec.files = Dir.chdir(__dir__) do
     `git ls-files -z`.split("\x0").reject do |f|
@@ -24,13 +25,14 @@ Gem::Specification.new do |spec|
     end
   end
 
-  spec.bindir = "exe"
+  spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.require_paths = ['lib']
 
-  spec.add_dependency 'rails'
   spec.add_dependency 'pg'
+  spec.add_dependency 'rails'
   spec.add_dependency 'spree'
   spec.add_dependency 'spree_backend'
   spec.add_dependency 'spree_i18n'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
