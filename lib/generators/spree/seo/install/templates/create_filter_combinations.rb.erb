@@ -3,7 +3,7 @@
 class CreateFilterCombinations < ActiveRecord::Migration<%= migration_version %>
   def up
     create_table :filter_combinations do |t|
-      t.belongs_to :spree_taxon
+      # t.belongs_to :spree_taxon
       t.string  :locale
       t.json    :filters
       t.string  :canonical_url

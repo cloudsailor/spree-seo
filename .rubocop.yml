@@ -2,7 +2,7 @@ AllCops:
   TargetRubyVersion: 3.3
   NewCops: enable
   FailLevel: error
-  
+
 Style/Documentation:
   Exclude:
     - 'db/**/*'
