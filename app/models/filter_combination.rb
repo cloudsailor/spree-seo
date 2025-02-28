@@ -2,7 +2,7 @@
 
 # Model to store filters and seo for a taxon.
 class FilterCombination < ApplicationRecord
-  belongs_to :spree_taxon, class_name: '::Spree::Taxon'
+  belongs_to :spree_taxon, class_name: 'Spree::Taxon'
 
   validates :locale, :canonical_url, :page_title, :meta_description, :keywords, :priority, presence: true
   validates :priority, inclusion: 0.0..1.0
