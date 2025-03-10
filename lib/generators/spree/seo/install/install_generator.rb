@@ -1,33 +1,33 @@
 # frozen_string_literal: true
 
-require_relative "../migration_generator"
+require_relative '../migration_generator'
 
 module Spree
   module Seo
+    # Gem installation class
     class InstallGenerator < MigrationGenerator
       MYSQL_ADAPTERS = [
-        "ActiveRecord::ConnectionAdapters::MysqlAdapter",
-        "ActiveRecord::ConnectionAdapters::Mysql2Adapter"
+        'ActiveRecord::ConnectionAdapters::MysqlAdapter',
+        'ActiveRecord::ConnectionAdapters::Mysql2Adapter'
       ].freeze
-      source_root File.expand_path("templates", __dir__)
+      source_root File.expand_path('templates', __dir__)
 
-      desc "Generates (but does not run) a migration to add a versions table." \
-           "  See section 5.c. Generators in README.md for more information."
+      desc 'Generates (but does not run) a migration to add a versions table.  ' \
+           'See section 5.c. Generators in README.md for more information.'
 
       def create_migration_file
-        add_seo_migration("create_filter_combinations")
+        add_seo_migration('create_filter_combinations')
       end
 
       private
-
 
       # MySQL 5.6 utf8mb4 limit is 191 chars for keys used in indexes.
       # See https://github.com/paper-trail-gem/paper_trail/issues/651
       def item_type_options
         if mysql?
-          ", null: false, limit: 191"
+          ', null: false, limit: 191'
         else
-          ", null: false"
+          ', null: false'
         end
       end
 
@@ -54,7 +54,7 @@ module Spree
         if mysql?
           ', options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci"'
         else
-          ""
+          ''
         end
       end
     end

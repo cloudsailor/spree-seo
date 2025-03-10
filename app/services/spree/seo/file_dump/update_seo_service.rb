@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module Spree
   module Seo
     module FileDump
-      class UpdateSeoService < ApplicationService
+      # Handles seo changes
+      class UpdateSeoService
         # @param
         # seo_object: [FilterCombination]
         def initialize(seo_object)
@@ -22,33 +25,34 @@ module Spree
         private
 
         def filename
-          "#{@seo&.spree_taxon.id}-filters.json"
+          "#{@seo&.spree_taxon&.id}-filters.json"
         end
 
         def locale
           @seo&.locale
         end
 
-        def create_args
+        def create_args # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           {
-            "seo_id" => @seo.id,
-            "seo_description" => @seo&.seo_description,
-            "custom_h1" => @seo&.custom_h1,
-            "custom_h2" => @seo&.custom_h2,
-            "page_title" => @seo&.page_title,
-            "canonical_url" => @seo&.canonical_url,
-            "meta_description" => @seo&.meta_description,
-            "keywords" => @seo&.keywords,
-            "priority" => @seo&.priority
+            'seo_id' => @seo.id,
+            'seo_description' => @seo&.seo_description,
+            'custom_h1' => @seo&.custom_h1,
+            'custom_h2' => @seo&.custom_h2,
+            'page_title' => @seo&.page_title,
+            'canonical_url' => @seo&.canonical_url,
+            'meta_description' => @seo&.meta_description,
+            'keywords' => @seo&.keywords,
+            'priority' => @seo&.priority
           }
         end
+
         def update_args
           create_args
         end
 
         def remove_args
           {
-            "seo_id" => @seo.id,
+            'seo_id' => @seo.id
           }
         end
       end
