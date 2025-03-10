@@ -1,4 +1,4 @@
-# Spree Seo
+# Spree Seo ;) 
 
 **Spree SEO** is a plugin to extend SEO capabilities.
 
