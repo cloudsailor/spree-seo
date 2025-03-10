@@ -1,0 +1,23 @@
+Version 0.1.0
+ - Added bump-version.sh
+ - Merge pull request #6 from cloudsailor/ek-143
+ - FIX BREAKING CHANGE Remove Spree::Api::V2::Platform::TaxonSerializer from initializer
+ - Add minor technical improvements
+ - Fix rubocop and brakeman
+ - Merge pull request #5 from cloudsailor/ek-87
+ - Remove most global variables from seo-related jobs, cover language update case
+ - Add seo file generation
+ - Merge pull request #4 from cloudsailor/ek-87
+ - Update travis.yml
+ - Remove ENGINE_ROOT to fix migrations problem
+ - Merge pull request #3 from cloudsailor/feature-update-readme
+ - Updated README.md
+ - Merge pull request #2 from cloudsailor/feature-engine-setup
+ - further cleanup
+ - cleanup
+ - final edits
+ - further updates
+ - updates
+ - Initial combinations and controller setup
+ - Initial commiy
+
