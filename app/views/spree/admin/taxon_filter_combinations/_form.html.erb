@@ -2,10 +2,10 @@
   <div class="row">
     <div class="col-12 col-md-8">
       <div>
-        <%= f.hidden_field :spree_taxon_id, value: f.object.spree_taxon_id || params[:taxon_id] %>
+        <%= f.hidden_field :spree_taxon_id, value: f.object.spree_taxon_id || params[:taxon_id] || @taxon_id %>
         <%= f.field_container :locale do %>
           <%= f.label :locale, raw(Spree.t(:locale) + required_span_tag) %>
-          <%= f.select :locale, %w[en cs sk], {}, class: 'form-control title' %>
+          <%= f.select :locale, %w[en cs sk], {}, { class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } } %>
           <%= f.error_message_on :locale %>
         <% end %>
       </div>
@@ -13,7 +13,8 @@
       <div>
         <%= f.field_container :filters do %>
           <%= f.label :filters, raw(Spree.t(:filters) + required_span_tag + " Please add filters like so: color=blue,fineness=0.01ct") %>
-          <%= f.text_field :filters, class: 'form-control title', value: f.object.filters.is_a?(String) || f.object.filters.blank? ? f.object.filters : f.object.filters.map{|k,v| "#{k}=#{v}"}.join(',') %>
+          <%= f.text_field :filters, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" },
+                           value: f.object.filters.is_a?(String) || f.object.filters.blank? ? f.object.filters : f.object.filters.map{|k,v| "#{k}=#{v}"}.join(',') %>
           <%= f.error_message_on :filters %>
         <% end %>
       </div>
@@ -21,7 +22,7 @@
       <div>
         <%= f.field_container :canonical_url do %>
           <%= f.label :canonical_url, Spree.t(:canonical_url) %>
-          <%= f.text_field :canonical_url, class: 'form-control title' %>
+          <%= f.text_field :canonical_url, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :canonical_url %>
         <% end %>
       </div>
@@ -29,7 +30,7 @@
       <div>
         <%= f.field_container :page_title do %>
           <%= f.label :page_title, Spree.t(:page_title) %>
-          <%= f.text_field :page_title, class: 'form-control title' %>
+          <%= f.text_field :page_title, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :page_title %>
         <% end %>
       </div>
@@ -37,7 +38,7 @@
       <div>
         <%= f.field_container :meta_description do %>
           <%= f.label :meta_description, Spree.t(:meta_description) %>
-          <%= f.text_field :meta_description, class: 'form-control title' %>
+          <%= f.text_field :meta_description, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :meta_description %>
         <% end %>
       </div>
@@ -45,7 +46,7 @@
       <div>
         <%= f.field_container :keywords do %>
           <%= f.label :keywords, Spree.t(:keywords) %>
-          <%= f.text_field :keywords, class: 'form-control title' %>
+          <%= f.text_field :keywords, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :keywords %>
         <% end %>
       </div>
@@ -53,7 +54,7 @@
       <div>
         <%= f.field_container :custom_h1 do %>
           <%= f.label :custom_h1, Spree.t(:page_title) %>
-          <%= f.text_field :custom_h1, class: 'form-control title' %>
+          <%= f.text_field :custom_h1, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :custom_h1 %>
         <% end %>
       </div>
@@ -61,7 +62,7 @@
       <div>
         <%= f.field_container :custom_h2 do %>
           <%= f.label :custom_h2, Spree.t(:custom_h2) %>
-          <%= f.text_field :custom_h2, class: 'form-control title' %>
+          <%= f.text_field :custom_h2, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :custom_h2 %>
         <% end %>
       </div>
@@ -69,7 +70,7 @@
       <div>
         <%= f.field_container :seo_description do %>
           <%= f.label :seo_description, Spree.t(:seo_description) %>
-          <%= f.text_field :seo_description, class: 'form-control title' %>
+          <%= f.text_field :seo_description, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :seo_description %>
         <% end %>
       </div>
@@ -77,7 +78,8 @@
       <div>
         <%= f.field_container :priority do %>
           <%= f.label :priority, Spree.t(:priority) %>
-          <%= f.text_field :priority, class: 'form-control title' %>
+          <%= f.number_field :priority, class: 'form-control title', required: true,
+                             min: 0, max: 1, step: 0.01, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :priority %>
         <% end %>
       </div>
