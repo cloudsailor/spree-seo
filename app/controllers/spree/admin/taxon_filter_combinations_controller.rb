@@ -58,6 +58,7 @@ module Spree
       end
 
       def unsuccessful_response
+        @taxon_id = params[:filter_combination][:spree_taxon_id]
         respond_with(@object) do |format|
           format.html { render action: :new, status: :unprocessable_entity }
           format.js { render layout: false, status: :unprocessable_entity }

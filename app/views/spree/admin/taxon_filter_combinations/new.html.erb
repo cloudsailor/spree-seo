@@ -4,6 +4,17 @@
 
 
 <%= form_for [:admin, @taxon_filter_combination], url: admin_taxon_filter_combinations_path, method: :post, html: { multipart: true } do |f| %>
+  <% if @object.errors.any? %>
+    <div class="alert alert-danger">
+      <h4>There were errors:</h4>
+      <ul>
+        <% @object.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <fieldset>
     <%= render partial: 'form', locals: { f: f } %>
   </fieldset>
