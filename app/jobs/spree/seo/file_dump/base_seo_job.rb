@@ -5,8 +5,6 @@ module Spree
     module FileDump
       # Base job for seo content management
       class BaseSeoJob < ApplicationJob
-        retry_on StandardError, attempts: 3, wait: 5.seconds
-
         def default_path
           Rails.public_path.join('files').to_s
         end
