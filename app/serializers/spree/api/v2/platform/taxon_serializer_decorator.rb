@@ -13,15 +13,13 @@ module Spree
             base.attribute(:available_combinations) do |taxon|
               taxon.filter_combinations.map(&:attributes)
             end
-            # rubocop:disable Layout/IndentationWidth
             base.attribute(:combinations_html) do |taxon|
               headings = "<thead><th>Locale</th><th>Filters</th><th>Canonical URL</th><th>Page Title</th><th>Meta Description</th><th class='text-center'>Actions</th></thead>"
               data = taxon.filter_combinations.map do |f|
-                       "<tr><td>#{f.locale}</td><td>#{f.filters.map do |k, v|
-                         "#{k}=#{v}"
-                       end.join(',')}</td><td>#{f.canonical_url}</td><td>#{f.page_title}</td><td>#{f.meta_description}</td><td class='actions'><span><a class='edit' href='/admin/taxon_filter_combinations/#{f.id}/edit'>Edit</a></span></td></tr>"
+                "<tr><td>#{f.locale}</td><td>#{f.filters.map do |k, v|
+                  "#{k}=#{v}"
+                end.join(',')}</td><td>#{f.canonical_url}</td><td>#{f.page_title}</td><td>#{f.meta_description}</td><td class='actions'><span><a class='edit' href='/admin/taxon_filter_combinations/#{f.id}/edit'>Edit</a></span></td></tr>"
               end.join
-              # rubocop:enable Layout/IndentationWidth
               body = "<tbody>#{data}</tbody>"
 
               "<div class='table-responsive border rounded bg-white'><a class='mt-3 ml-3 btn btn-success' href='/admin/taxon_filter_combinations/new?taxon_id=#{taxon.id}'>New Combination</a><table class='table'>#{headings}#{body}</table></div>"
@@ -32,4 +30,9 @@ module Spree
       end
     end
   end
+end
+
+if Spree::Api::V2::Platform::TaxonSerializer.included_modules
+                                            .exclude?(Spree::Api::V2::Platform::TaxonSerializerDecorator)
+  Spree::Api::V2::Platform::TaxonSerializer.prepend Spree::Api::V2::Platform::TaxonSerializerDecorator
 end
