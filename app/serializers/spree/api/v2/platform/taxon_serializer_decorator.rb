@@ -25,7 +25,6 @@ module Spree
                 data-confirm='Are you sure you want to remove this combination?'>
                 Remove
               </a> </span></td></tr>"
-
               end.join
               body = "<tbody>#{data}</tbody>"
 

@@ -1,7 +1,7 @@
 AllCops:
   TargetRubyVersion: 3.3
   NewCops: enable
-  FailLevel: error
+
 
 Style/Documentation:
   Exclude:
@@ -18,3 +18,7 @@ Metrics/BlockLength:
 Lint/MissingSuper:
   Exclude:
     - 'app/**/*'
+
+Metrics/MethodLength:
+  Exclude:
+    - app/controllers/spree/admin/taxon_filter_combinations_controller.rb

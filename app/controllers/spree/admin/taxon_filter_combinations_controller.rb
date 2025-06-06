@@ -15,7 +15,7 @@ module Spree
         set_ops
       end
 
-      def edit;end
+      def edit; end
 
       def create
         invoke_callbacks(:create, :before)
@@ -68,7 +68,7 @@ module Spree
       end
 
       def set_ops
-        @ops ||= @object.ops
+        @set_ops ||= @object.ops
       end
     end
   end
