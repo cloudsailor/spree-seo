@@ -2,22 +2,379 @@
   <div class="row">
     <div class="col-12 col-md-8">
       <div>
-        <%= f.hidden_field :spree_taxon_id, value: f.object.spree_taxon_id || params[:taxon_id] || @taxon_id %>
+        <%= f.hidden_field :spree_taxon_id,
+                           value: (f.object.spree_taxon_id || params[:taxon_id] || @taxon_id) %>
+
         <%= f.field_container :locale do %>
           <%= f.label :locale, raw(Spree.t(:locale) + required_span_tag) %>
-          <%= f.select :locale, %w[en cs sk], {}, { class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } } %>
+
+          <%# 1) the real “locale” value that gets submitted: %>
+          <%= f.hidden_field :locale, value: (f.object.locale || I18n.default_locale) %>
+
+          <%# 2) a disabled <select> for display only—no name so it won’t override: %>
+          <select class="form-control title" disabled>
+            <%# Build the same choices you’d have had ⇒ %>
+            <% %w[en cs sk].each do |loc| %>
+              <option value="<%= loc %>"
+                      <%= "selected" if loc.to_s == (f.object.locale || I18n.default_locale).to_s %>>
+                <%= loc %>
+              </option>
+            <% end %>
+          </select>
+
           <%= f.error_message_on :locale %>
         <% end %>
       </div>
 
-      <div>
-        <%= f.field_container :filters do %>
-          <%= f.label :filters, raw(Spree.t(:filters) + required_span_tag + " Please add filters like so: color=blue,fineness=0.01ct") %>
-          <%= f.text_field :filters, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" },
-                           value: f.object.filters.is_a?(String) || f.object.filters.blank? ? f.object.filters : f.object.filters.map{|k,v| "#{k}=#{v}"}.join(',') %>
-          <%= f.error_message_on :filters %>
-        <% end %>
-      </div>
+
+      <%= f.field_container :filters do %>
+        <%#─────────────────────────────────────────────────────────────────%>
+        <%# 1) Label + hidden_field for :filters                           %>
+        <%#─────────────────────────────────────────────────────────────────%>
+        <%= f.label :filters, raw(Spree.t(:filters) + required_span_tag) %>
+        <% puts I18n.default_locale %>
+        <%#-------------------------------------------------------------------------%>
+        <%# 2) Compute the initial string for the hidden field.                    %>
+        <%#    If @@object.filters is a Hash (because of your before_save), rebuild %>
+        <%#    "key=v1|v2,other=v3" from that Hash. Otherwise, it’s already a string. %>
+        <%#-------------------------------------------------------------------------%>
+        <%
+            if @object.filters.is_a?(Hash) && @object.filters.present?
+                # @object.filters might be { "collection" => "QUEEN OF HEARTS|OUTLET", "fineness" => "925" }
+                initial_filters_value = @object.filters.map { |k, v|
+                    # In case v is already an Array vs. String, unify to Array, then join with "|"
+                    joined = Array(v).join("|")
+                    "#{k}=#{joined}"
+                }.join(";")
+            else
+              initial_filters_value = ""
+            end
+        %>
+
+        <%= f.hidden_field :filters,
+                           id:      "#{f.object_name}_filters",
+                           value:   initial_filters_value,
+                           data:    { target: "filter-combination.hiddenField" } %>
+
+        <%#─────────────────────────────────────────────────────────────────%>
+        <%# 3) Build a JS object key→array_of_values for each op in @ops    %>
+        <%#─────────────────────────────────────────────────────────────────%>
+        <script>
+            window.filterOptionsByKey = {};
+            <% @ops.each do |p| %>
+            window.filterOptionsByKey["<%= j p.name %>"] = <%= raw(p.product_properties.map(&:value).uniq.to_json) %>;
+            <% end %>
+        </script>
+
+        <!-- ───────────────────────────────────────────────────────────────── -->
+        <!-- 1) The “Add filter” button + container + <template> for one row -->
+        <!-- ───────────────────────────────────────────────────────────────── -->
+        <div id="filter-combination-wrapper">
+          <button
+              type="button"
+              id="add-filter-btn"
+              class="btn btn-secondary mb-2">
+            Add filter
+          </button>
+
+          <!-- Container where all active filter‐rows get appended -->
+          <div id="filter-rows-container"></div>
+
+          <!-- This <template> is never submitted to Rails; we clone from it -->
+          <template id="filter-row-template">
+            <div
+                class="filter-row mb-2 d-flex align-items-center"
+                data-row-id="__INDEX__">
+              <!-- KEY dropdown: name="filter_keys[__INDEX__]" -->
+              <select
+                  name="filter_keys[__INDEX__]"
+                  id="filter_key___INDEX__"
+                  class="key-select form-control mr-2">
+                <option value="" disabled selected>Pick a key</option>
+                <% @ops.each do |p| %>
+                  <option value="<%= j p.name %>">
+                    <%= p.name.humanize %>
+                  </option>
+                <% end %>
+              </select>
+
+              <!-- VALUES multi‐select: name="filter_values[__INDEX__][]" -->
+              <select
+                  name="filter_values[__INDEX__][]"
+                  id="filter_values___INDEX__"
+                  class="values-select form-control mr-2"
+                  multiple="multiple">
+                <!-- JavaScript will inject <option> tags in here -->
+              </select>
+
+              <!-- Remove this filter -->
+              <button
+                  type="button"
+                  class="btn btn-outline-danger remove-filter-btn"
+                  title="Remove this filter">&times;</button>
+            </div>
+          </template>
+        </div>
+
+
+        <%#─────────────────────────────────────────────────────────────────%>
+        <%# 5) ALL of the JS inline, ensuring loadExisting runs before serialize %>
+        <%#─────────────────────────────────────────────────────────────────%>
+        <script>
+            document.addEventListener("spree:load", function() {
+                const addBtn        = document.getElementById("add-filter-btn");
+                const rowsContainer = document.getElementById("filter-rows-container");
+                const template      = document.getElementById("filter-row-template");
+                const hiddenField   = document.getElementById("<%= "#{f.object_name}_filters" %>");
+
+                //─────────────────────────────────────────────────────
+                // Utility: initialize Select2 (if available)
+                //─────────────────────────────────────────────────────
+                function initSelect2(selectEl) {
+                    if (window.jQuery && typeof window.jQuery(selectEl).select2 === "function") {
+                        window.jQuery(selectEl).select2({
+                            width: "200px",
+                            placeholder: "Select values…"
+                        });
+                    }
+                }
+
+                //─────────────────────────────────────────────────────
+                // 1) serializeAll(): read each .filter-row and rebuild the hidden-field
+                //─────────────────────────────────────────────────────
+                function serializeAll() {
+                    const rows = Array.from(rowsContainer.querySelectorAll(".filter-row"));
+                    if (rows.length === 0) {
+                        // Do NOT overwrite the hiddenField when there are zero rows
+                        return;
+                    }
+
+                    const parts = rows.map(function(rowDiv) {
+                        const idx = rowDiv.getAttribute("data-row-id");
+                        const keyEl = rowDiv.querySelector(`#filter_key_${idx}`);
+                        const valSelect = rowDiv.querySelector(`#filter_values_${idx}`);
+                        if (!keyEl || !valSelect) return null;
+                        const key = keyEl.value;
+
+                        // (a) Try reading Select2’s <li title="…"> if present
+                        let vals = [];
+                        const nextBlock = valSelect.nextElementSibling;
+                        if (nextBlock) {
+                            const liElements = nextBlock.querySelectorAll("li[title]");
+                            if (liElements.length) {
+                                vals = Array.from(liElements)
+                                  .map(li => li.getAttribute("title"))
+                                  .filter(x => x !== null);
+                            }
+                        }
+
+                        // (b) Fallback to native <select multiple>
+                        if (vals.length === 0) {
+                            vals = Array.from(valSelect.selectedOptions)
+                              .map(opt => opt.value)
+                              .filter(v => v);
+                        }
+
+                        if (!key || vals.length === 0) {
+                            return null;
+                        }
+                        return `${key}=${vals.join("|")}`;
+                    }).filter(x => x !== null);
+
+                    hiddenField.value = parts.join(";");
+                }
+
+                //─────────────────────────────────────────────────────
+                // 2) keyChanged(event, idx): user picks a KEY → rebuild that row’s VALUES
+                //─────────────────────────────────────────────────────
+                function keyChanged(event, idx) {
+                    const chosenKey = event.target.value;
+                    const valuesSelect = document.getElementById(`filter_values_${idx}`);
+                    if (!valuesSelect) return;
+
+                    const allValues = window.filterOptionsByKey?.[chosenKey] || [];
+                    valuesSelect.innerHTML = "";
+                    allValues.forEach(function(val) {
+                        const opt = document.createElement("option");
+                        opt.value = val;
+                        opt.textContent = val;
+                        valuesSelect.appendChild(opt);
+                    });
+
+                    if (window.jQuery && typeof window.jQuery(valuesSelect).select2 === "function") {
+                        window.jQuery(valuesSelect).off("select2:select select2:unselect");
+                        window.jQuery(valuesSelect).select2("destroy");
+                        initSelect2(valuesSelect);
+                        window.jQuery(valuesSelect).on("select2:select select2:unselect", serializeAll);
+                    }
+
+                    serializeAll();
+                }
+
+                //─────────────────────────────────────────────────────
+                // 3) getNextIndex(): find the highest data-row-id in the DOM, +1 (or 0 if none)
+                //─────────────────────────────────────────────────────
+                function getNextIndex() {
+                    const existingRows = Array.from(rowsContainer.querySelectorAll(".filter-row"));
+                    if (existingRows.length === 0) return 0;
+                    const maxIdx = existingRows
+                      .map(r => parseInt(r.getAttribute("data-row-id"), 10))
+                      .reduce((a, b) => Math.max(a, b), -1);
+                    return maxIdx + 1;
+                }
+
+                //─────────────────────────────────────────────────────
+                // 4) addRow(): clone template, wire events, append, serializeAll()
+                //─────────────────────────────────────────────────────
+                function addRow(event) {
+                    event.preventDefault();
+                    const idx = getNextIndex();
+                    const cloneHtml = template.innerHTML.replace(/__INDEX__/g, idx);
+                    const wrapper = document.createElement("div");
+                    wrapper.innerHTML = cloneHtml;
+                    const rowDiv = wrapper.firstElementChild;
+                    rowDiv.setAttribute("data-row-id", idx);
+
+                    // (a) KEY <select> → keyChanged(idx)
+                    const keySelect = rowDiv.querySelector(`#filter_key_${idx}`);
+                    if (keySelect) {
+                        keySelect.addEventListener("change", function(e) {
+                            keyChanged(e, idx);
+                        });
+                    }
+
+                    // (b) VALUES <select>: init Select2 & bind change → serializeAll
+                    const valuesSelect = rowDiv.querySelector(`#filter_values_${idx}`);
+                    if (valuesSelect) {
+                        initSelect2(valuesSelect);
+                        valuesSelect.addEventListener("change", serializeAll);
+                        if (window.jQuery && typeof window.jQuery(valuesSelect).select2 === "function") {
+                            window.jQuery(valuesSelect).on("select2:select select2:unselect", serializeAll);
+                        }
+                    }
+
+                    // (c) Remove button → delete row + serializeAll
+                    const removeBtn = rowDiv.querySelector(".remove-filter-btn");
+                    if (removeBtn) {
+                        removeBtn.addEventListener("click", function(e) {
+                            e.preventDefault();
+                            rowDiv.remove();
+                            serializeAll();
+                        });
+                    }
+
+                    rowsContainer.appendChild(rowDiv);
+                    serializeAll();
+                }
+
+                //─────────────────────────────────────────────────────
+                // 5) loadExisting(): rebuild rows from hiddenField.value, only if container is still empty
+                //─────────────────────────────────────────────────────
+                function loadExisting() {
+                    // If we already have .filter-row children, bail out. That prevents duplication on back/forward.
+                    if (rowsContainer.querySelector(".filter-row")) {
+                        return;
+                    }
+
+                    const existing = hiddenField.value.trim();
+                    if (!existing) return;
+                    const pairs = existing.split(";").map(p => p.trim()).filter(p => p.length);
+                    if (pairs.length === 0) return;
+
+                    pairs.forEach(function(pair) {
+                        const [key, joinedValues] = pair.split("=");
+                        if (!key || !joinedValues) return;
+                        const vals = joinedValues.split("|");
+                        const idx = getNextIndex();
+                        const cloneHtml = template.innerHTML.replace(/__INDEX__/g, idx);
+                        const wrapper = document.createElement("div");
+                        wrapper.innerHTML = cloneHtml;
+                        const rowDiv = wrapper.firstElementChild;
+                        rowDiv.setAttribute("data-row-id", idx);
+
+                        // (a) Set KEY <select> to saved key
+                        const keySelect = rowDiv.querySelector(`#filter_key_${idx}`);
+                        if (keySelect) {
+                            keySelect.value = key;
+                        }
+
+                        // (b) Build VALUES <select> with all options, marking saved ones selected
+                        const valuesSelect = rowDiv.querySelector(`#filter_values_${idx}`);
+                        if (valuesSelect) {
+                            const allValues = window.filterOptionsByKey?.[key] || [];
+                            valuesSelect.innerHTML = "";
+                            allValues.forEach(function(val) {
+                                const opt = document.createElement("option");
+                                opt.value = val;
+                                opt.textContent = val;
+                                if (vals.includes(val)) {
+                                    opt.selected = true;
+                                }
+                                valuesSelect.appendChild(opt);
+                            });
+
+                            if (window.jQuery && typeof window.jQuery(valuesSelect).select2 === "function") {
+                                initSelect2(valuesSelect);
+                                window.jQuery(valuesSelect).val(vals).trigger("change");
+                                window.jQuery(valuesSelect).on("select2:select select2:unselect", serializeAll);
+                            }
+
+                            valuesSelect.addEventListener("change", serializeAll);
+                        }
+
+                        // (c) KEY change → keyChanged(idx)
+                        if (keySelect) {
+                            keySelect.addEventListener("change", function(e) {
+                                keyChanged(e, idx);
+                            });
+                        }
+
+                        // (d) Remove button → delete row + serializeAll
+                        const removeBtn = rowDiv.querySelector(".remove-filter-btn");
+                        if (removeBtn) {
+                            removeBtn.addEventListener("click", function(e) {
+                                e.preventDefault();
+                                rowDiv.remove();
+                                serializeAll();
+                            });
+                        }
+
+                        rowsContainer.appendChild(rowDiv);
+                    });
+
+                    serializeAll();
+                }
+
+                //─────────────────────────────────────────────────────
+                // 6) Before form submit → run serializeAll()
+                //─────────────────────────────────────────────────────
+                const form = document.querySelector("form");
+                if (form) {
+                    form.addEventListener("submit", function() {
+                        serializeAll();
+                    });
+                }
+
+                //─────────────────────────────────────────────────────
+                // 7) Only bind “Add filter” once, regardless of spree:load firing multiple times
+                //─────────────────────────────────────────────────────
+                if (addBtn && !addBtn.dataset.filterListenerBound) {
+                    addBtn.addEventListener("click", addRow);
+                    addBtn.dataset.filterListenerBound = "true";
+                }
+
+                // Rebuild existing rows on page load
+                loadExisting();
+            });
+        </script>
+
+
+
+
+
+        <%= f.error_message_on :filters %>
+      <% end %>
+
 
       <div>
         <%= f.field_container :canonical_url do %>
@@ -53,7 +410,7 @@
 
       <div>
         <%= f.field_container :custom_h1 do %>
-          <%= f.label :custom_h1, Spree.t(:page_title) %>
+          <%= f.label :custom_h1, Spree.t(:custom_h1) %>
           <%= f.text_field :custom_h1, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :custom_h1 %>
         <% end %>
