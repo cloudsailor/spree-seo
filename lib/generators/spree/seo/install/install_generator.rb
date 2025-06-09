@@ -19,6 +19,13 @@ module Spree
         add_seo_migration('create_filter_combinations')
       end
 
+      desc 'Copies Stimulus controllers to your host application.'
+
+      def copy_stimulus_controllers
+        copy_file 'filters_controller.js',
+                  'app/javascript/controllers/filters_controller.js'
+      end
+
       private
 
       # MySQL 5.6 utf8mb4 limit is 191 chars for keys used in indexes.
