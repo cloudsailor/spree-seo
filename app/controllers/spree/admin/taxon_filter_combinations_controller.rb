@@ -67,8 +67,8 @@ module Spree
         end
       end
 
-      def set_ops
-        @set_ops ||= @object.ops
+      def ops
+        @ops ||= @object.ops
       end
     end
   end

@@ -24,9 +24,12 @@ class FilterCombination < ApplicationRecord
   end
 
   def ops
-    products_scope = spree_taxon.products
-    product_properties = Spree::ProductProperties::FindAvailable.new(products_scope:).execute
-    @ops ||= Spree::Filters::PropertiesPresenter.new(product_properties_scope: product_properties).to_a
+    @ops ||=
+      begin
+        products_scope = spree_taxon.products
+        product_properties = Spree::ProductProperties::FindAvailable.new(products_scope:).execute
+        Spree::Filters::PropertiesPresenter.new(product_properties_scope: product_properties).to_a
+      end
   end
 
   private

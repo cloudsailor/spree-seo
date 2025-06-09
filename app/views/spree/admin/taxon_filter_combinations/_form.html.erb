@@ -61,7 +61,7 @@
         <%#─────────────────────────────────────────────────────────────────%>
         <script>
             window.filterOptionsByKey = {};
-            <% @ops.each do |p| %>
+            <% @ops&.each do |p| %>
             window.filterOptionsByKey["<%= j p.name %>"] = <%= raw(p.product_properties.map(&:value).uniq.to_json) %>;
             <% end %>
         </script>
@@ -91,7 +91,7 @@
                   id="filter_key___INDEX__"
                   class="key-select form-control mr-2">
                 <option value="" disabled selected>Pick a key</option>
-                <% @ops.each do |p| %>
+                <% @ops&.each do |p| %>
                   <option value="<%= j p.name %>">
                     <%= p.name.humanize %>
                   </option>
