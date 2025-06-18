@@ -35,7 +35,7 @@ module Spree
         def create_args # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           {
             'seo_id' => @seo.id,
-            'filters' => @seo.filters,
+            'filters' => @seo&.filters,
             'seo_description' => @seo&.seo_description,
             'custom_h1' => @seo&.custom_h1,
             'custom_h2' => @seo&.custom_h2,

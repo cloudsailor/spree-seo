@@ -14,7 +14,7 @@ module Spree
         def perform(filename, locale, args) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
           envs.each do |env|
             path = "#{default_path}/#{env}/#{filename}"
-            next unless load_file(path, locale) && seo_key_exists(locale)
+            next unless load_file(path, locale) && seo_key_exists?(locale)
 
             @seo_index ||= find_existing_key(args)
             if @seo_index[:language] == locale
@@ -40,7 +40,7 @@ module Spree
           @file[locale]['seo'][index] = args
         end
 
-        def seo_key_exists(locale)
+        def seo_key_exists?(locale)
           @file[locale] = {} unless @file.keys.include?(locale)
           @file[locale]['seo'] = [] unless @file[locale].keys.include?('seo')
           true
