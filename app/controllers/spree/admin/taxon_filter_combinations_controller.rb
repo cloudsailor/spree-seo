@@ -5,12 +5,14 @@ module Spree
     # Controller to manage FilterCombination resources
     class TaxonFilterCombinationsController < ::Spree::Admin::ResourceController
       include ::Spree::Admin::Translatable
+      before_action :product_options, only: [:edit]
       respond_to :html, :js
 
       def index; end
 
       def new
         @object = ::FilterCombination.new(spree_taxon_id: params[:taxon_id])
+        product_options
       end
 
       def edit; end
@@ -18,7 +20,7 @@ module Spree
       def create
         invoke_callbacks(:create, :before)
         @object = ::FilterCombination.new(permitted_resource_params)
-
+        product_options
         if @object.save
           set_current_store
           invoke_callbacks(:create, :after)
@@ -63,6 +65,10 @@ module Spree
           format.html { render action: :new, status: :unprocessable_entity }
           format.js { render layout: false, status: :unprocessable_entity }
         end
+      end
+
+      def product_options
+        @product_options ||= @object.product_options
       end
     end
   end

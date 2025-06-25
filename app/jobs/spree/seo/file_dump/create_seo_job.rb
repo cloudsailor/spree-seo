@@ -15,7 +15,7 @@ module Spree
         def perform(filename, locale, args)
           envs.each do |env|
             path = "#{default_path}/#{env}/#{filename}"
-            next unless load_file(path, locale) && seo_key_exists(locale)
+            next unless load_file(path, locale) && seo_key_exists?(locale)
 
             add_new_seo(locale, args)
             File.write(path, JSON.pretty_generate(@file))
@@ -30,7 +30,7 @@ module Spree
           @file[locale]['seo'].append(args)
         end
 
-        def seo_key_exists(locale)
+        def seo_key_exists?(locale)
           @file[locale] = {} unless @file.keys.include?(locale)
           @file[locale]['seo'] = [] unless @file[locale].keys.include?('seo')
           true
