@@ -1,6 +1,7 @@
 <div data-controller="taxon-filter-combination-edit">
   <div class="row">
     <div class="col-12 col-md-8">
+      <h3> <%= 'Taxon name: ' + @object.spree_taxon.name %></h3>
       <div>
         <%= f.hidden_field :spree_taxon_id,
                            value: (f.object.spree_taxon_id || params[:taxon_id] || @taxon_id) %>
@@ -9,14 +10,14 @@
           <%= f.label :locale, raw(Spree.t(:locale) + required_span_tag) %>
 
           <%# 1) the real “locale” value that gets submitted: %>
-          <%= f.hidden_field :locale, value: (f.object.locale || I18n.default_locale) %>
+          <%= f.hidden_field :locale, value: (I18n.locale) %>
 
           <%# 2) a disabled <select> for display only—no name so it won’t override: %>
           <select class="form-control title" disabled>
             <%# Build the same choices you’d have had ⇒ %>
             <% %w[en cs sk].each do |loc| %>
               <option value="<%= loc %>"
-                      <%= "selected" if loc.to_s == (f.object.locale || I18n.default_locale).to_s %>>
+                      <%= "selected" if loc.to_s == (I18n.locale).to_s %>>
                 <%= loc %>
               </option>
             <% end %>
