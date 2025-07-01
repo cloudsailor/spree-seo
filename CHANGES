@@ -1,3 +1,17 @@
+Version 1.1.0:
+ - Update gem version
+ - Merge pull request #12 from cloudsailor/EK-278
+ - Add taxon name on the top of form, correct default value of Locale field
+ - Merge pull request #11 from cloudsailor/EK-278
+ - Add safecheck for @seo.filters, fix rubocop offences
+ - Move filters_controller.js to generator, clear code
+ - Optimize ops method, add safe checks inside _form
+ - Fix rubocop offences
+ - Add clickable filters
+ - Merge branch 'release-1.0.0' into develop
+ - Merge branch 'release-1.0.0'
+ - Merge branch 'hotfix-0.1.1'
+
 Version 1.0.0:
 
 
