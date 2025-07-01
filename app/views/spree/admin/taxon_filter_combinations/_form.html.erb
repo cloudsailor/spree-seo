@@ -1,23 +1,117 @@
 <div data-controller="taxon-filter-combination-edit">
   <div class="row">
     <div class="col-12 col-md-8">
+      <h3> <%= 'Taxon name: ' + @object.spree_taxon.name %></h3>
       <div>
-        <%= f.hidden_field :spree_taxon_id, value: f.object.spree_taxon_id || params[:taxon_id] || @taxon_id %>
+        <%= f.hidden_field :spree_taxon_id,
+                           value: (f.object.spree_taxon_id || params[:taxon_id] || @taxon_id) %>
+
         <%= f.field_container :locale do %>
           <%= f.label :locale, raw(Spree.t(:locale) + required_span_tag) %>
-          <%= f.select :locale, %w[en cs sk], {}, { class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } } %>
+
+          <%# 1) the real “locale” value that gets submitted: %>
+          <%= f.hidden_field :locale, value: (I18n.locale) %>
+
+          <%# 2) a disabled <select> for display only—no name so it won’t override: %>
+          <select class="form-control title" disabled>
+            <%# Build the same choices you’d have had ⇒ %>
+            <% %w[en cs sk].each do |loc| %>
+              <option value="<%= loc %>"
+                      <%= "selected" if loc.to_s == (I18n.locale).to_s %>>
+                <%= loc %>
+              </option>
+            <% end %>
+          </select>
+
           <%= f.error_message_on :locale %>
         <% end %>
       </div>
 
-      <div>
-        <%= f.field_container :filters do %>
-          <%= f.label :filters, raw(Spree.t(:filters) + required_span_tag + " Please add filters like so: color=blue,fineness=0.01ct") %>
-          <%= f.text_field :filters, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" },
-                           value: f.object.filters.is_a?(String) || f.object.filters.blank? ? f.object.filters : f.object.filters.map{|k,v| "#{k}=#{v}"}.join(',') %>
-          <%= f.error_message_on :filters %>
-        <% end %>
-      </div>
+
+      <%= f.field_container :filters do %>
+        <%= f.label :filters, raw(Spree.t(:filters) + required_span_tag) %>
+        <%
+          if @object.filters.is_a?(Hash) && @object.filters.present?
+            initial_filters_value = @object.filters.map { |k,v|
+              "#{k}=#{Array(v).join("|")}"
+            }.join(";")
+          else
+            initial_filters_value = ""
+          end
+        %>
+
+        <script>
+            window.filterOptionsByKey = {};
+            <% @product_options&.each do |p| %>
+            window.filterOptionsByKey["<%= j p.name %>"] = <%= raw(p.product_properties.map(&:value).uniq.to_json) %>;
+            <% end %>
+        </script>
+
+        <div
+          id="filter-combination-wrapper"
+          data-controller="filters">
+
+          <%# 1) Hidden field must live _inside_ the controller %>
+          <%= f.hidden_field :filters,
+                             id: "#{f.object_name}_filters",
+                             value: initial_filters_value,
+                             data: { 'filters-target' => 'hiddenField' } %>
+          <button
+            type="button"
+            id="add-filter-btn"
+            class="btn btn-secondary mb-2"
+            data-filters-target="addBtn"
+            data-action="filters#addRow">
+            Add filter
+          </button>
+
+          <div
+            id="filter-rows-container"
+            data-filters-target="rowsContainer">
+          </div>
+
+          <%# 4) Row template %>
+          <template
+            id="filter-row-template"
+            data-filters-target="template">
+            <div
+              class="filter-row mb-2 d-flex align-items-center"
+              data-row-id="__INDEX__">
+              <!-- KEY -->
+              <select
+                name="filter_keys[__INDEX__]"
+                id="filter_key___INDEX__"
+                class="key-select form-control mr-2">
+                <option value="" disabled selected>Pick a key</option>
+                <% @product_options&.each do |p| %>
+                  <option value="<%= j p.name %>">
+                    <%= p.name.humanize %>
+                  </option>
+                <% end %>
+              </select>
+
+              <!-- VALUES -->
+              <select
+                name="filter_values[__INDEX__][]"
+                id="filter_values___INDEX__"
+                class="values-select form-control mr-2"
+                multiple>
+              </select>
+
+              <!-- Remove -->
+              <button
+                type="button"
+                class="btn btn-outline-danger remove-filter-btn"
+                title="Remove this filter">
+                &times;
+              </button>
+            </div>
+          </template>
+        </div>
+
+        <%= f.error_message_on :filters %>
+      <% end %>
+
 
       <div>
         <%= f.field_container :canonical_url do %>
@@ -53,7 +147,7 @@
 
       <div>
         <%= f.field_container :custom_h1 do %>
-          <%= f.label :custom_h1, Spree.t(:page_title) %>
+          <%= f.label :custom_h1, Spree.t(:custom_h1) %>
           <%= f.text_field :custom_h1, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :custom_h1 %>
         <% end %>

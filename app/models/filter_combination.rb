@@ -15,12 +15,21 @@ class FilterCombination < ApplicationRecord
   def format_filters
     dict = {}
 
-    filters.split(',').each do |c|
+    filters.split(';').each do |c|
       k, v = c.split('=')
       dict[k] = v
     end
 
     self.filters = dict
+  end
+
+  def product_options
+    @product_options ||=
+      begin
+        products_scope = spree_taxon.products
+        product_properties = Spree::ProductProperties::FindAvailable.new(products_scope:).execute
+        Spree::Filters::PropertiesPresenter.new(product_properties_scope: product_properties).to_a
+      end
   end
 
   private

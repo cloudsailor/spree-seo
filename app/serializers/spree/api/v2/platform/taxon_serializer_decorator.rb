@@ -18,7 +18,13 @@ module Spree
               data = taxon.filter_combinations.map do |f|
                 "<tr><td>#{f.locale}</td><td>#{f.filters.map do |k, v|
                   "#{k}=#{v}"
-                end.join(',')}</td><td>#{f.canonical_url}</td><td>#{f.page_title}</td><td>#{f.meta_description}</td><td class='actions'><span><a class='edit' href='/admin/taxon_filter_combinations/#{f.id}/edit'>Edit</a></span></td></tr>"
+                end.join(',')}</td><td>#{f.canonical_url}</td><td>#{f.page_title}</td><td>#{f.meta_description}</td><td class='actions'><span><a class='edit' href='/admin/taxon_filter_combinations/#{f.id}/edit'>Edit</a> <a
+                class='remove-combination-btn'
+                href='/admin/taxon_filter_combinations/#{f.id}'
+                data-method='delete'
+                data-confirm='Are you sure you want to remove this combination?'>
+                Remove
+              </a> </span></td></tr>"
               end.join
               body = "<tbody>#{data}</tbody>"
 
