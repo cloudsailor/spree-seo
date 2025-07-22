@@ -164,7 +164,7 @@
       <div>
         <%= f.field_container :seo_description do %>
           <%= f.label :seo_description, Spree.t(:seo_description) %>
-          <%= f.text_field :seo_description, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
+          <%= f.text_area :seo_description, class: 'form-control spree-rte', data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :seo_description %>
         <% end %>
       </div>
