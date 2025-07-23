@@ -8,7 +8,10 @@ module Spree
       before_action :product_options, only: [:edit]
       respond_to :html, :js
 
-      def index; end
+      def index
+        filter_combinations = ::FilterCombination.all
+        @taxons = filter_combinations.map(&:spree_taxon).uniq
+      end
 
       def new
         @object = ::FilterCombination.new(spree_taxon_id: params[:taxon_id])
