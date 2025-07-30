@@ -1,0 +1,19 @@
+pl:
+  actions:
+    back: Powrót
+    submit: Zatwierdź
+    edit: Edycja
+    remove: Usuń
+  taxon_filter_combinations: Taxon Filter Combinations
+  spree:
+    taxon_filter_combinations: Taxon Filter Combinations
+  seo:
+    all_combinations: Wszystkie filter combinations
+    taxon_name: Nazwa Taxonu
+    locale: Język
+    filters: Filtry
+    canonical_url: Canonical URL
+    page_title: Tytuł Strony
+    meta_description: Meta Opis
+    actions: Akcje
+    confirm_remove: Na pewno chcesz usunąć ten obiekt filter-combination?

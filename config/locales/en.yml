@@ -2,6 +2,18 @@ en:
   actions:
     back: Back
     submit: Submit
+    edit: Edit
+    remove: Remove
   taxon_filter_combinations: Taxon Filter Combinations
   spree:
     taxon_filter_combinations: Taxon Filter Combinations
+  seo:
+    all_combinations: All filter combinations
+    taxon_name: Taxon name
+    locale: Locale
+    filters: Filters
+    canonical_url: Canonical URL
+    page_title: Page Title
+    meta_description: Meta Description
+    actions: Actions
+    confirm_remove: Are you sure you want to remove this combination?

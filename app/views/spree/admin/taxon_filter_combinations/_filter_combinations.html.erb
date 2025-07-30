@@ -1,15 +1,15 @@
 <div class="table-responsive border rounded bg-white">
-  <h3> All filter combinations </h3>
+  <h3> <%= Spree.t("seo.all_combinations") %> </h3>
   <table class="table">
     <thead>
     <tr>
-      <th>Taxon name</th>
-      <th>Locale</th>
-      <th>Filters</th>
-      <th>Canonical URL</th>
-      <th>Page Title</th>
-      <th>Meta Description</th>
-      <th class="text-center">Actions</th>
+      <th><%= Spree.t("seo.taxon_name") %></th>
+      <th><%= Spree.t("seo.locale") %></th>
+      <th><%= Spree.t("seo.filters") %></th>
+      <th><%= Spree.t("seo.canonical_url") %> URL</th>
+      <th>Page <%= Spree.t("seo.page_title") %></th>
+      <th>Meta <%= Spree.t("seo.meta_description") %></th>
+      <th class="text-center"><%= Spree.t("seo.actions") %></th>
     </tr>
     </thead>
     <tbody>
@@ -24,10 +24,10 @@
           <td><%= f.meta_description %></td>
           <td class="actions">
             <span>
-              <%= link_to 'Edit', spree.edit_admin_taxon_filter_combination_path(f), class: 'edit' %>
-              <%= link_to 'Remove', spree.admin_taxon_filter_combination_path(f),
+              <%= link_to Spree.t("actions.edit"), spree.edit_admin_taxon_filter_combination_path(f), class: 'edit' %>
+              <%= link_to Spree.t("actions.remove"), spree.admin_taxon_filter_combination_path(f),
                           method: :delete,
-                          data: { confirm: 'Are you sure you want to remove this combination?' },
+                          data: { confirm: Spree.t("seo.confirm_remove") },
                           class: 'remove-combination-btn' %>
             </span>
           </td>
