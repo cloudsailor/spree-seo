@@ -2,6 +2,7 @@ en:
   actions:
     back: Back
     submit: Submit
+    remove: Remove
   taxon_filter_combinations: Taxon Filter Combinations
   spree:
     taxon_filter_combinations: Taxon Filter Combinations
