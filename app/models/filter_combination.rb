@@ -42,16 +42,25 @@ class FilterCombination < ApplicationRecord
 
   private
 
-  def acceptable_media
+  def acceptable_media # rubocop:disable Metrics/AbcSize
     return unless icon.attached?
 
+    size = icon.byte_size
     case icon.content_type
-    when %r{\Aimage/(jpeg|jpg|png|svg|avif|webp)\z}
-      errors.add(:icon, 'Picture is too big (max 100KB)') if icon.byte_size > 100.kilobytes
-    when 'video/mp4'
-      errors.add(:icon, 'Video is too big (max 5MB)') if icon.byte_size > 5.megabytes
+    when image_type
+      errors.add(:icon, t(:'errors.picture_too_big')) if size > 100.kilobytes
+    when video_type
+      errors.add(:icon, t('errors.video_too_big')) if size > 5.megabytes
     else
-      errors.add(:icon, 'must be a JPG/PNG/WebP image or an MP4 video')
+      errors.add(:icon, t(:'errors.wrong_icon_format'))
     end
+  end
+
+  def image_type
+    %r{\Aimage/(jpeg|jpg|png|svg|avif|webp)\z}
+  end
+
+  def video_type
+    'video/mp4'
   end
 end

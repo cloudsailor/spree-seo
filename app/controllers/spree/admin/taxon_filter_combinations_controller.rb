@@ -34,9 +34,9 @@ module Spree
         if @object.icon.attached?
           @object.icon.destroy
           @object.update_taxon_seo(:update)
-          flash[:success] = "Icon file deleted."
+          flash[:success] = 'Icon file deleted.'
         else
-          flash[:error] = "No icon file to delete."
+          flash[:error] = 'No icon file to delete.'
         end
 
         redirect_to edit_admin_taxon_filter_combination_path(@object)

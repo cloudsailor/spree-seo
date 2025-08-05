@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 include Rails.application.routes.url_helpers
 
 module Spree
@@ -34,22 +35,17 @@ module Spree
         end
 
         # Recurrence to fetch parent icon if is absent for @seo
-        def icon_url(parent: @seo, url: nil)
-          if parent.is_a?(FilterCombination)
-            return Rails.application.routes.url_helpers.url_for(@seo.icon) if @seo.icon.present? && @seo.icon.save
-            
-            url = icon_url(parent: @seo.spree_taxon) || 'Not found'
-          end
-          
-          if url.nil?
-            debugger
-            return Rails.application.routes.url_helpers.url_for(parent.icon.attachment) if parent.icon.present?
-            return nil if parent.parent.nil?
+        def find_icon_url
+          return generate_url(@seo.icon) if @seo.icon.present? && @seo.icon.save
 
-            url = icon_url(parent: parent.parent)
-          end
-            
-          url
+          parent_icon(parent: @seo.spree_taxon) || 'Not found'
+        end
+
+        def parent_icon(parent:)
+          return generate_url(parent.icon.attachment) if parent.icon.present?
+          return nil if parent.parent.nil?
+
+          parent_icon(parent: parent.parent)
         end
 
         def create_args # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -64,7 +60,7 @@ module Spree
             'meta_description' => @seo&.meta_description,
             'keywords' => @seo&.keywords,
             'priority' => @seo&.priority,
-            'icon_url' => icon_url
+            'icon_url' => find_icon_url
           }
         end
 
@@ -76,6 +72,10 @@ module Spree
           {
             'seo_id' => @seo.id
           }
+        end
+
+        def generate_url(icon)
+          Rails.application.routes.url_helpers.url_for(icon)
         end
       end
     end

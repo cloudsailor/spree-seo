@@ -6,3 +6,8 @@ en:
   taxon_filter_combinations: Taxon Filter Combinations
   spree:
     taxon_filter_combinations: Taxon Filter Combinations
+  errors:
+    picture_too_big: Picture is too big (max 100KB)
+    video_too_big: Video is too big (max 5MB)
+    wrong_icon_format: Must be a JPG/PNG/WebP/SVG/JPEG/AVIF image or an MP4 video
+
