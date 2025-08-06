@@ -48,11 +48,11 @@ class FilterCombination < ApplicationRecord
     size = icon.byte_size
     case icon.content_type
     when image_type
-      errors.add(:icon, t(:'errors.picture_too_big')) if size > 100.kilobytes
+      errors.add(:icon, I18n.t(:'errors.picture_too_big')) if size > 100.kilobytes
     when video_type
-      errors.add(:icon, t('errors.video_too_big')) if size > 5.megabytes
+      errors.add(:icon, I18n.t('errors.video_too_big')) if size > 5.megabytes
     else
-      errors.add(:icon, t(:'errors.wrong_icon_format'))
+      errors.add(:icon, I18n.t(:'errors.wrong_icon_format'))
     end
   end
 

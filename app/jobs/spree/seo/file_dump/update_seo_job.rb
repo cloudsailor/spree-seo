@@ -17,11 +17,16 @@ module Spree
             next unless load_file(path, locale) && seo_key_exists?(locale)
 
             @seo_index ||= find_existing_key(args)
-            if @seo_index[:language] == locale
+            if @seo_index&.fetch(:language, nil) == locale
+              # Exists seo in the language
               update_seo(@seo_index[:language], args, @seo_index[:index])
-            else
+            elsif @seo_index&.fetch(:language, nil)
+              # Seo language has changed
               add_new_seo(locale, args)
               delete_old_seo(filename, @seo_index[:language], { 'seo_id' => args['seo_id'] })
+            else
+              # For some reason Seo didn't exist before - edge case
+              add_new_seo(locale, args)
             end
 
             File.write(path, JSON.pretty_generate(@file))
