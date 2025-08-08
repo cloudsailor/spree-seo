@@ -3,6 +3,9 @@ en:
     back: Back
     submit: Submit
     remove: Remove
+  flash_messages:
+    icon_deleted: Icon file deleted.
+    no_icon_file: No icon file to delete.
   taxon_filter_combinations: Taxon Filter Combinations
   spree:
     taxon_filter_combinations: Taxon Filter Combinations
