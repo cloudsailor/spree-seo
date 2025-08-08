@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+include Rails.application.routes.url_helpers
+
 module Spree
   module Seo
     module FileDump
@@ -32,6 +34,20 @@ module Spree
           @seo&.locale
         end
 
+        # Recurrence to fetch parent icon if is absent for @seo
+        def find_icon_url
+          return generate_url(@seo.icon) if @seo.icon.present? && @seo.icon.save
+
+          parent_icon(parent: @seo.spree_taxon) || 'Not found'
+        end
+
+        def parent_icon(parent:)
+          return generate_url(parent.icon.attachment) if parent.icon.present?
+          return nil if parent.parent.nil?
+
+          parent_icon(parent: parent.parent)
+        end
+
         def create_args # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           {
             'seo_id' => @seo.id,
@@ -43,7 +59,8 @@ module Spree
             'canonical_url' => @seo&.canonical_url,
             'meta_description' => @seo&.meta_description,
             'keywords' => @seo&.keywords,
-            'priority' => @seo&.priority
+            'priority' => @seo&.priority,
+            'icon_url' => find_icon_url
           }
         end
 
@@ -55,6 +72,10 @@ module Spree
           {
             'seo_id' => @seo.id
           }
+        end
+
+        def generate_url(icon)
+          Rails.application.routes.url_helpers.url_for(icon)
         end
       end
     end
