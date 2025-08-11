@@ -17,3 +17,10 @@ pl:
     meta_description: Meta Opis
     actions: Akcje
     confirm_remove: Na pewno chcesz usunąć ten obiekt filter-combination?
+  flash_messages:
+    icon_deleted: Baner usunięty.
+    no_icon_file: Brak baneru do usunięcia.
+  errors:
+    picture_too_big: Rozmiar zdjęcia jest za duży (max 100KB)
+    video_too_big: Rozmiar wideo jest za duży (max 5MB)
+    wrong_icon_format: Format musi być jednym z JPG/PNG/WebP/SVG/JPEG/AVIF dla zdjęcia lub MP4 dla wideo
