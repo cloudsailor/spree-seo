@@ -12,7 +12,7 @@ pl:
     taxon_name: Nazwa Taxonu
     locale: Język
     filters: Filtry
-    canonical_url: Canonical URL
+    canonical_url: Kanoniczny URL
     page_title: Tytuł Strony
     meta_description: Meta Opis
     actions: Akcje
