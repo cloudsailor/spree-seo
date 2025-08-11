@@ -6,6 +6,7 @@ module Spree
     class TaxonFilterCombinationsController < ::Spree::Admin::ResourceController
       include ::Spree::Admin::Translatable
       before_action :product_options, only: [:edit]
+
       respond_to :html, :js
 
       def index
@@ -17,8 +18,6 @@ module Spree
         @object = ::FilterCombination.new(spree_taxon_id: params[:taxon_id])
         product_options
       end
-
-      def edit; end
 
       def create
         invoke_callbacks(:create, :before)
@@ -34,6 +33,18 @@ module Spree
         end
       end
 
+      def delete_icon
+        if @object.icon.attached?
+          @object.icon.destroy
+          @object.update_taxon_seo(:update)
+          flash[:success] = I18n.t('flash_messages.icon_deleted')
+        else
+          flash[:error] = I18n.t('flash_messages.no_icon_file')
+        end
+
+        redirect_to edit_admin_taxon_filter_combination_path(@object)
+      end
+
       def model_class
         ::FilterCombination
       end
@@ -44,11 +55,15 @@ module Spree
 
       private
 
+      def location_after_save
+        edit_admin_taxon_filter_combination_path(@object)
+      end
+
       def permitted_resource_params
         params.require(:filter_combination).permit(:spree_taxon_id, :locale, :filters,
                                                    :canonical_url, :page_title, :meta_description,
                                                    :keywords, :custom_h1, :custom_h2,
-                                                   :seo_description, :priority)
+                                                   :seo_description, :priority, :icon, :remove_icon)
       end
 
       def success_response
