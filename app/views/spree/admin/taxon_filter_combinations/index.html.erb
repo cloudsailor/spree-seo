@@ -8,96 +8,104 @@
   </div>
 
   <ul id="taxon_filter_combinations" class="taxon row"></ul>
+
+  <div id="initial-filter-combinations" style="display: block">
+    <%= render partial: 'spree/admin/taxon_filter_combinations/filter_combinations', locals: { taxons: @taxons } %>
+  </div>
 </div>
 
 <script type='text/javascript'>
-  document.addEventListener("spree:load", function() {
-    window.productTemplate = Handlebars.compile($('#product_template').text())
-    var taxonProducts = $('#taxon_filter_combinations')
-    var taxonId = $('#taxon_id')
+    document.addEventListener("spree:load", function() {
+        window.productTemplate = Handlebars.compile($('#product_template').text())
+        var taxonProducts = $('#taxon_filter_combinations')
+        var taxonId = $('#taxon_id')
 
-    var el = document.getElementById('taxon_products')
-    if (el) {
-      Sortable.create(el, {
-        handle: '.sort-handle',
-        ghostClass: 'moving-this',
-        animation: 550,
-        easing: 'cubic-bezier(1, 0, 0, 1)',
-        swapThreshold: 0.9,
-        forceFallback: true,
-        onEnd: function (evt) {
-          handleClassificationReposition(evt)
-        }
-      })
-    }
-
-    function handleClassificationReposition(evt) {
-      var classificationId = evt.item.getAttribute('data-classification-id')
-      var data = {
-        classification: {
-          position: parseInt(evt.newIndex, 10) + 1
-        }
-      }
-      var requestData = {
-         uri: Spree.routes.classifications_api_v2 + '/' + classificationId,
-         method: 'PATCH',
-         dataBody: data,
-      }
-      spreeFetchRequest(requestData)
-    }
-
-    if (taxonId.length > 0) {
-      taxonId.select2({
-        placeholder: Spree.translations.find_a_taxon,
-        minimumInputLength: 3,
-        multiple: false,
-        ajax: {
-          url: Spree.routes.taxons_api_v2,
-          datatype: 'json',
-          headers: Spree.apiV2Authentication(),
-          data: function (params, page) {
-            return {
-              per_page: 50,
-              page: page,
-              filter: {
-                name_cont: params.term
-              }
-            }
-          },
-          processResults: function (data, page) {
-            var more = page < data.meta.total_pages
-
-            var results = data.data.map(function (obj) {
-              return {
-                id: obj.id,
-                text: obj.attributes.pretty_name
-              }
+        var el = document.getElementById('taxon_products')
+        if (el) {
+            Sortable.create(el, {
+                handle: '.sort-handle',
+                ghostClass: 'moving-this',
+                animation: 550,
+                easing: 'cubic-bezier(1, 0, 0, 1)',
+                swapThreshold: 0.9,
+                forceFallback: true,
+                onEnd: function (evt) {
+                    handleClassificationReposition(evt)
+                }
             })
-
-            return {
-              results: results,
-              pagination: {
-                more: more
-              }
-            }
-          }
         }
-      }).on('select2:select', function (e) {
-        e.preventDefault()
 
-        $.ajax({
-          url: Spree.routes.taxons_api_v2,
-          headers: Spree.apiV2Authentication(),
-          data: {
-            filter: {
-              id_eq: e.params.data.id
+        function handleClassificationReposition(evt) {
+            var classificationId = evt.item.getAttribute('data-classification-id')
+            var data = {
+                classification: {
+                    position: parseInt(evt.newIndex, 10) + 1
+                }
             }
-          }
-        }).done(function (json) {
-          taxonProducts.empty()
-          taxonProducts.html(json.data[0].attributes.combinations_html)
-        })
-      })
-    }
-  })
+            var requestData = {
+                uri: Spree.routes.classifications_api_v2 + '/' + classificationId,
+                method: 'PATCH',
+                dataBody: data,
+            }
+            spreeFetchRequest(requestData)
+        }
+
+        const initialFilterCombinations = document.getElementById('initial-filter-combinations')
+
+        if (taxonId.length > 0) {
+            taxonId.select2({
+                placeholder: Spree.translations.find_a_taxon,
+                minimumInputLength: 0,
+                multiple: false,
+                ajax: {
+                    url: Spree.routes.taxons_api_v2,
+                    datatype: 'json',
+                    headers: Spree.apiV2Authentication(),
+                    data: function (params, page) {
+                        return {
+                            per_page: 500,
+                            page: page,
+                            filter: {
+                                name_cont: params.term
+                            }
+                        }
+                    },
+                    processResults: function (data, page) {
+                        var more = page < data.meta.total_pages
+
+                        var results = data.data.map(function (obj) {
+                            return {
+                                id: obj.id,
+                                text: obj.attributes.pretty_name
+                            }
+                        })
+
+                        return {
+                            results: results,
+                            pagination: {
+                                more: more
+                            }
+                        }
+                    }
+                }
+            }).on('select2:select', function (e) {
+                initialFilterCombinations.style.display = 'none'
+
+                e.preventDefault()
+
+                $.ajax({
+                    url: Spree.routes.taxons_api_v2,
+                    headers: Spree.apiV2Authentication(),
+                    data: {
+                        filter: {
+                            id_eq: e.params.data.id
+                        }
+                    }
+                }).done(function (json) {
+                    taxonProducts.empty()
+                    taxonProducts.html(json.data[0].attributes.combinations_html)
+                })
+            })
+        }
+    })
 </script>

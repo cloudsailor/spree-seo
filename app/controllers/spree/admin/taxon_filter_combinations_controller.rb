@@ -9,7 +9,11 @@ module Spree
 
       respond_to :html, :js
 
-      def index; end
+      def index
+        @taxons = Spree::Taxon
+                  .includes(:filter_combinations)
+                  .where.not(filter_combinations: { id: nil })
+      end
 
       def new
         @object = ::FilterCombination.new(spree_taxon_id: params[:taxon_id])
