@@ -10,8 +10,9 @@ module Spree
       respond_to :html, :js
 
       def index
-        filter_combinations = ::FilterCombination.all
-        @taxons = filter_combinations.map(&:spree_taxon).uniq
+        @taxons = Spree::Taxon
+                  .includes(:filter_combinations)
+                  .where.not(filter_combinations: { id: nil })
       end
 
       def new
