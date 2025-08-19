@@ -1,3 +1,20 @@
+Version 1.2.0:
+ - Merge pull request #16 from cloudsailor/EK-637
+ - Setup GitHub Actions CI
+ - Merge pull request #15 from cloudsailor/EK-77
+ - Refactor update_seo_job
+ - Add transaltions for flash messages
+ - Correct translations, add update job edge case handling
+ - Add transaltions, fix rubocop offences
+ - Add Image/Mp4 to filter_combination form
+ - Create PULL_REQUEST_TEMPLATE.md
+ - Merge pull request #13 from cloudsailor/EK-606
+ - Edit seo_description field type
+ - Merge branch 'release-1.1.0' into develop
+ - Merge branch 'release-1.1.0'
+ - Merge branch 'release-1.0.0'
+ - Merge branch 'hotfix-0.1.1'
+
 Version 1.1.0:
  - Update gem version
  - Merge pull request #12 from cloudsailor/EK-278
