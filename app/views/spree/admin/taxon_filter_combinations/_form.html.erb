@@ -164,7 +164,7 @@
       <div>
         <%= f.field_container :seo_description do %>
           <%= f.label :seo_description, Spree.t(:seo_description) %>
-          <%= f.text_field :seo_description, class: 'form-control title', required: true, data: { target: "taxon-filter-combination-edit.field" } %>
+          <%= f.text_area :seo_description, class: 'form-control spree-rte', data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :seo_description %>
         <% end %>
       </div>
@@ -176,6 +176,32 @@
                              min: 0, max: 1, step: 0.01, data: { target: "taxon-filter-combination-edit.field" } %>
           <%= f.error_message_on :priority %>
         <% end %>
+      </div>
+
+      <div>
+        <%= f.field_container :icon do %>
+          <%= f.label :icon, "Taxon icon (JPG/PNG/WebP/JPEG/AVIF/SVG or MP4)" %><br>
+          <%= f.file_field :icon, direct_upload: true %>
+          <%= f.error_message_on :icon %>
+
+          <% if @object.errors[:icon].present? %>
+            <div class="error-message" style="color: red;">
+              <%= @object.errors[:icon].to_sentence %>
+            </div>
+          <% end %>
+
+<!--          Picture/Mp4 preview and remove button-->
+          <% if @object.icon.attached? && @object.icon.blob.present? && @object.icon.blob.persisted? %>
+            <div class="mt-2">
+              <% if @object.icon.blob.content_type.start_with?("image/") %>
+                <%= image_tag main_app.url_for(@object.icon), class: 'admin-preview' %>
+              <% elsif @object.icon.blob.content_type == "video/mp4" %>
+                <%= video_tag main_app.url_for(@object.icon), controls: true, width: 800, class: 'admin-preview' %>
+              <% end %>
+              <%= link_to t(:'actions.remove'), delete_icon_admin_taxon_filter_combination_url(@object.id), method: :delete %>
+            </div>
+          <% end %>
+      <% end %>
       </div>
 
       <div>
