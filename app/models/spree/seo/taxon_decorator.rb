@@ -14,5 +14,3 @@ module Spree
     end
   end
 end
-
-Spree::Taxon.prepend Spree::Seo::TaxonDecorator if Spree::Taxon.included_modules.exclude?(Spree::Seo::TaxonDecorator)
