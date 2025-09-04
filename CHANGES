@@ -1,3 +1,18 @@
+Version 1.3.0:
+ - Move Rails.application.routes.url_helpers into class to avoid double loading
+ - Merge pull request #14 from cloudsailor/EK-559
+ - Optimize taxon filter combination index page
+ - Merge branch 'release-1.2.0' into develop
+ - Merge branch 'release-1.2.0'
+ - Add missing polish translations
+ - Merge develop into EK-559
+ - Correct translation
+ - Add translations and update gems
+ - Make index page display all filter-combinations, searching now doesnt require 3 chars before listing taxons
+ - Merge branch 'release-1.1.0'
+ - Merge branch 'release-1.0.0'
+ - Merge branch 'hotfix-0.1.1'
+
 Version 1.2.0:
  - Merge pull request #16 from cloudsailor/EK-637
  - Setup GitHub Actions CI
