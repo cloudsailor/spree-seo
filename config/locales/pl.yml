@@ -1,0 +1,26 @@
+pl:
+  actions:
+    back: Powrót
+    submit: Zatwierdź
+    edit: Edycja
+    remove: Usuń
+  taxon_filter_combinations: Taxon Filter Combinations
+  spree:
+    taxon_filter_combinations: Taxon Filter Combinations
+  seo:
+    all_combinations: Wszystkie filter combinations
+    taxon_name: Nazwa Taxonu
+    locale: Język
+    filters: Filtry
+    canonical_url: Kanoniczny URL
+    page_title: Tytuł Strony
+    meta_description: Meta Opis
+    actions: Akcje
+    confirm_remove: Na pewno chcesz usunąć ten obiekt filter-combination?
+  flash_messages:
+    icon_deleted: Baner usunięty.
+    no_icon_file: Brak baneru do usunięcia.
+  errors:
+    picture_too_big: Rozmiar zdjęcia jest za duży (max 100KB)
+    video_too_big: Rozmiar wideo jest za duży (max 5MB)
+    wrong_icon_format: Format musi być jednym z JPG/PNG/WebP/SVG/JPEG/AVIF dla zdjęcia lub MP4 dla wideo

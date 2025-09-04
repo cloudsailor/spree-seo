@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-include Rails.application.routes.url_helpers
-
 module Spree
   module Seo
     module FileDump
       # Handles seo changes
       class UpdateSeoService
+        include Rails.application.routes.url_helpers
+
         # @param
         # seo_object: [FilterCombination]
         def initialize(seo_object)
