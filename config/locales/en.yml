@@ -2,6 +2,7 @@ en:
   actions:
     back: Back
     submit: Submit
+    edit: Edit
     remove: Remove
   flash_messages:
     icon_deleted: Icon file deleted.
