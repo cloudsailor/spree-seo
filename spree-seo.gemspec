@@ -5,8 +5,8 @@ require_relative 'lib/spree/seo/version'
 Gem::Specification.new do |spec|
   spec.name = 'spree-seo'
   spec.version = Spree::Seo::VERSION
-  spec.authors = ['Jibran Usman']
-  spec.email = ['jibran.usman@hotmail.com']
+  spec.authors = ['Jibran Usman', 'Tomasz Strzeszewski']
+  spec.email = ['jibran.usman@hotmail.com', 'tomasz.strzeszewski.s@gmail.com']
 
   spec.summary = 'An SEO add-on for the Spree gem that adds on a layer of SEO functions'
   spec.homepage = 'https://github.com/cloudsailor/spree-seo'

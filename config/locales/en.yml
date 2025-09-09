@@ -20,6 +20,7 @@ en:
     meta_description: Meta Description
     actions: Actions
     confirm_remove: Are you sure you want to remove this combination?
+    icon: Taxon icon (JPG/PNG/WebP/JPEG/AVIF/SVG or MP4). Choose or drag and drop. If empty - inherited from parent
   errors:
     picture_too_big: Picture is too big (max 100KB)
     video_too_big: Video is too big (max 5MB)
