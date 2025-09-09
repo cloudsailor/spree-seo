@@ -17,6 +17,8 @@ pl:
     meta_description: Meta Opis
     actions: Akcje
     confirm_remove: Na pewno chcesz usunąć ten obiekt filter-combination?
+    icon: Taxon icon (JPG/PNG/WebP/JPEG/AVIF/SVG or MP4). Wybierz lub przeciągnij plik. Jeśli puste - zostanie odziedziczone z wyższego taxonu
+
   flash_messages:
     icon_deleted: Baner usunięty.
     no_icon_file: Brak baneru do usunięcia.

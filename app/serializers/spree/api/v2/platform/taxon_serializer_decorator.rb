@@ -37,8 +37,3 @@ module Spree
     end
   end
 end
-
-if Spree::Api::V2::Platform::TaxonSerializer.included_modules
-                                            .exclude?(Spree::Api::V2::Platform::TaxonSerializerDecorator)
-  Spree::Api::V2::Platform::TaxonSerializer.prepend Spree::Api::V2::Platform::TaxonSerializerDecorator
-end
